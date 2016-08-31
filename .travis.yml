@@ -1,0 +1,36 @@
+language: cpp
+sudo: required
+dist: trusty
+os:
+  - linux
+#  - osx
+compiler:
+  - clang
+  - gcc
+#env:
+# - BUILD_CMAKE=no
+# - BUILD_CMAKE=yes
+
+matrix:
+  exclude:
+  #Exclude gcc build (Need some work) with osx
+#  - os: osx
+#    compiler: gcc
+  #Exclude autotools build (missing libtool...) with osx
+#  - os: osx
+#    env: BUILD_CMAKE=no
+before_install:
+  - echo $TRAVIS_OS_NAME
+  - $CC --version
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get update -qq; fi
+    #libstdc++-4.8 is needed by Clang to build
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get -qq install libstdc++-4.8-dev; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo export PATH=$PATH:`pwd`/depot_tools; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo ./src/build/install-build-deps.sh; fi
+  - $CC --version
+before_script:
+  - cd src && gclient runhooks && ninja -C out/Release quic_client quic_server net_unittests  
+script:
+  - make
+
