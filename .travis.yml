@@ -27,7 +27,7 @@ before_install:
     #libstdc++-4.8 is needed by Clang to build
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get -qq install libstdc++-4.8-dev; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then export PATH=$PATH:`pwd`/depot_tools; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo ./src/build/install-build-deps.sh; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo ./src/build/install-build-deps.sh --no-prompt; fi
   - $CC --version
 before_script:
   - cd src && gclient runhooks && ninja -C out/Release quic_client quic_server net_unittests  
